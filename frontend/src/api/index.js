@@ -1,5 +1,7 @@
 const socket = new WebSocket('ws://localhost:8080/ws');
 
+const messages = [];
+
 const connect = () => {
     console.log('Attempting Connection...');
     socket.onopen = () => console.log('Successfully Connected');
@@ -11,6 +13,11 @@ const connect = () => {
 const sendMsg = msg => {
     console.log(`Sending message: ${msg}`);
     socket.send(msg);
+    console.log(messages.length);
+    if (messages.length === 10){
+        messages.shift();
+    }
+    messages.push(msg);
 };
 
-export { connect, sendMsg };
+export { connect, sendMsg, messages };
