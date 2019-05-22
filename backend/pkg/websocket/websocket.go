@@ -1,0 +1,31 @@
+package websocket
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/gorilla/websocket"
+)
+
+// We'll need to fine an Upgrader
+// this will require a Read and Write buffer size
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+
+	// We'll need to check the origin of our connection
+	// this will allow us to make requests from our React
+	// development server to here.
+	// For now, we'll do no checking and just allow any connection.
+	// This is the equivalent of using `server.use(cors())` in an Express API.
+	CheckOrigin: func(r *http.Request) bool { return true },
+}
+
+func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return conn, nil
+}
